@@ -358,8 +358,13 @@ export default function CardModal({ card, isOpen, onClose, projectId }: CardModa
                 value={deadline}
                 onChange={(e) => {
                   setDeadline(e.target.value);
-                  const deadlineDate = e.target.value ? new Date(e.target.value + "T00:00:00Z") : null;
-                  updateCardMutation.mutate({ deadline: deadlineDate });
+                  if (e.target.value) {
+                    // Send ISO string to backend
+                    const deadlineDate = new Date(e.target.value + "T00:00:00Z").toISOString();
+                    updateCardMutation.mutate({ deadline: deadlineDate });
+                  } else {
+                    updateCardMutation.mutate({ deadline: null });
+                  }
                 }}
               />
               {card.deadline && (

@@ -334,12 +334,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.patch("/api/cards/:id", async (req, res) => {
     try {
       const { id } = req.params;
-      const updates = insertCardSchema.partial().parse(req.body);
       
-      // Handle deadline conversion
-      if (updates.deadline && typeof updates.deadline === 'string') {
-        updates.deadline = new Date(updates.deadline);
+      // Handle deadline conversion before schema validation
+      const requestBody = { ...req.body };
+      if (requestBody.deadline && typeof requestBody.deadline === 'string') {
+        requestBody.deadline = new Date(requestBody.deadline);
       }
+      
+      const updates = insertCardSchema.partial().parse(requestBody);
       
       const card = await storage.updateCard(id, updates);
       
