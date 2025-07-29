@@ -24,6 +24,24 @@ import { formatDistanceToNow } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import type { CardWithRelations } from "@shared/schema";
 import CardTags from "./card-tags";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useToast } from "@/hooks/use-toast";
+
+async function apiRequest(url: string, options: RequestInit = {}) {
+  const response = await fetch(url, {
+    headers: {
+      'Content-Type': 'application/json',
+      ...options.headers,
+    },
+    ...options,
+  });
+
+  if (!response.ok) {
+    throw new Error(`HTTP error! status: ${response.status}`);
+  }
+
+  return response.json();
+}
 
 interface CardModalProps {
   card: CardWithRelations | null;
@@ -34,6 +52,39 @@ interface CardModalProps {
 
 export default function CardModal({ card, isOpen, onClose, projectId }: CardModalProps) {
   const [newComment, setNewComment] = useState("");
+  const [title, setTitle] = useState(card?.title || "");
+  const [description, setDescription] = useState(card?.description || "");
+  const [priority, setPriority] = useState(card?.priority || "medium");
+  const [deadline, setDeadline] = useState(
+    card?.deadline ? new Date(card.deadline).toISOString().split('T')[0] : ""
+  );
+
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+
+  // Update card mutation
+  const updateCardMutation = useMutation({
+    mutationFn: async (updates: any) => {
+      return await apiRequest(`/api/cards/${card?.id}`, {
+        method: "PATCH",
+        body: JSON.stringify(updates),
+      });
+    },
+    onSuccess: () => {
+      toast({
+        title: "Cartão atualizado",
+        description: "As alterações foram salvas com sucesso.",
+      });
+      queryClient.invalidateQueries({ queryKey: [`/api/projects/${projectId}`] });
+    },
+    onError: (error) => {
+      toast({
+        title: "Erro",
+        description: "Não foi possível salvar as alterações.",
+        variant: "destructive",
+      });
+    },
+  });
 
   if (!card) return null;
 
@@ -70,7 +121,13 @@ export default function CardModal({ card, isOpen, onClose, projectId }: CardModa
           <div className="flex items-center space-x-3 flex-1">
             <div className={`w-4 h-4 ${getPriorityColor(card.priority || "medium")} rounded-full`} />
             <Input
-              defaultValue={card.title || ""}
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              onBlur={() => {
+                if (title !== card.title) {
+                  updateCardMutation.mutate({ title });
+                }
+              }}
               className="text-xl font-semibold text-gray-900 border-none bg-transparent focus:ring-0 p-0 h-auto"
             />
           </div>
@@ -94,7 +151,13 @@ export default function CardModal({ card, isOpen, onClose, projectId }: CardModa
             <div>
               <h3 className="text-sm font-semibold text-gray-900 mb-2">Descrição</h3>
               <Textarea
-                defaultValue={card.description || ""}
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                onBlur={() => {
+                  if (description !== (card.description || "")) {
+                    updateCardMutation.mutate({ description });
+                  }
+                }}
                 placeholder="Adicionar descrição..."
                 className="min-h-[100px] resize-none"
               />
@@ -247,7 +310,13 @@ export default function CardModal({ card, isOpen, onClose, projectId }: CardModa
             {/* Priority */}
             <div>
               <h3 className="text-sm font-semibold text-gray-900 mb-2">Prioridade</h3>
-              <Select defaultValue={card.priority || "medium"}>
+              <Select 
+                value={priority} 
+                onValueChange={(value) => {
+                  setPriority(value);
+                  updateCardMutation.mutate({ priority: value });
+                }}
+              >
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
@@ -286,7 +355,12 @@ export default function CardModal({ card, isOpen, onClose, projectId }: CardModa
               <h3 className="text-sm font-semibold text-gray-900 mb-2">Prazo</h3>
               <Input
                 type="date"
-                defaultValue={card.deadline ? new Date(card.deadline).toISOString().split('T')[0] : ""}
+                value={deadline}
+                onChange={(e) => {
+                  setDeadline(e.target.value);
+                  const deadlineDate = e.target.value ? new Date(e.target.value + "T00:00:00Z") : null;
+                  updateCardMutation.mutate({ deadline: deadlineDate });
+                }}
               />
               {card.deadline && (
                 <div className="mt-2 flex items-center space-x-2 text-xs text-red-600">

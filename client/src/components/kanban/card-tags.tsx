@@ -15,6 +15,33 @@ import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import type { Tag, CardWithRelations } from "@shared/schema";
 
+import { useState } from "react";
+import { X, Plus } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useToast } from "@/hooks/use-toast";
+import type { CardWithRelations, Tag } from "@shared/schema";
+
+async function apiRequest(url: string, options: RequestInit = {}) {
+  const response = await fetch(url, {
+    headers: {
+      'Content-Type': 'application/json',
+      ...options.headers,
+    },
+    ...options,
+  });
+
+  if (!response.ok) {
+    throw new Error(`HTTP error! status: ${response.status}`);
+  }
+
+  return response.json();
+}
+
 interface CardTagsProps {
   card: CardWithRelations;
   projectId: string;
@@ -96,6 +123,47 @@ export default function CardTags({ card, projectId }: CardTagsProps) {
     });
   };
 
+  // Add tag to card
+  const addTagToCard = async (tagId: string) => {
+    try {
+      await apiRequest(`/api/cards/${card.id}/tags`, {
+        method: "POST",
+        body: JSON.stringify({ tagId }),
+      });
+      queryClient.invalidateQueries({ queryKey: [`/api/projects/${projectId}`] });
+      toast({
+        title: "Tag adicionada",
+        description: "Tag foi adicionada ao cartão com sucesso.",
+      });
+    } catch (error) {
+      toast({
+        title: "Erro",
+        description: "Não foi possível adicionar a tag.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  // Remove tag from card
+  const removeTagFromCard = async (tagId: string) => {
+    try {
+      await apiRequest(`/api/cards/${card.id}/tags/${tagId}`, {
+        method: "DELETE",
+      });
+      queryClient.invalidateQueries({ queryKey: [`/api/projects/${projectId}`] });
+      toast({
+        title: "Tag removida",
+        description: "Tag foi removida do cartão com sucesso.",
+      });
+    } catch (error) {
+      toast({
+        title: "Erro",
+        description: "Não foi possível remover a tag.",
+        variant: "destructive",
+      });
+    }
+  };
+
   return (
     <div className="space-y-3">
       <Label>Tags</Label>
@@ -121,6 +189,81 @@ export default function CardTags({ card, projectId }: CardTagsProps) {
           </Badge>
         ))}
       </div>
+
+      {/* Add existing tag */}
+      {availableTags.length > 0 && (
+        <Popover>
+          <PopoverTrigger asChild>
+            <Button variant="outline" size="sm">
+              <Plus className="h-4 w-4 mr-1" />
+              Adicionar tag existente
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-64">
+            <div className="space-y-2">
+              {availableTags.map((tag) => (
+                <Button
+                  key={tag.id}
+                  variant="ghost"
+                  size="sm"
+                  className="w-full justify-start"
+                  onClick={() => addTagToCard(tag.id)}
+                >
+                  <div 
+                    className="w-3 h-3 rounded-full mr-2" 
+                    style={{ backgroundColor: tag.color }}
+                  />
+                  {tag.name}
+                </Button>
+              ))}
+            </div>
+          </PopoverContent>
+        </Popover>
+      )}
+
+      {/* Create new tag */}
+      {isCreating ? (
+        <div className="space-y-2 p-3 border rounded-lg">
+          <Input
+            placeholder="Nome da tag"
+            value={newTagName}
+            onChange={(e) => setNewTagName(e.target.value)}
+          />
+          <div className="flex items-center space-x-2">
+            <Input
+              type="color"
+              value={newTagColor}
+              onChange={(e) => setNewTagColor(e.target.value)}
+              className="w-12 h-8 p-1"
+            />
+            <Button
+              size="sm"
+              onClick={() => createTagMutation.mutate({ name: newTagName, color: newTagColor })}
+              disabled={!newTagName.trim() || createTagMutation.isPending}
+            >
+              Criar
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => {
+                setIsCreating(false);
+                setNewTagName("");
+              }}
+            >
+              Cancelar
+            </Button>
+          </div>
+        </div>
+      ) : (
+        <Button variant="outline" size="sm" onClick={() => setIsCreating(true)}>
+          <Plus className="h-4 w-4 mr-1" />
+          Criar nova tag
+        </Button>
+      )}
+    </div>
+  );
+}v>
 
       {/* Add tag popover */}
       <Popover>

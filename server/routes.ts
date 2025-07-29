@@ -335,15 +335,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const { id } = req.params;
       const updates = insertCardSchema.partial().parse(req.body);
+      
+      // Handle deadline conversion
+      if (updates.deadline && typeof updates.deadline === 'string') {
+        updates.deadline = new Date(updates.deadline);
+      }
+      
       const card = await storage.updateCard(id, updates);
       
-      // Get project ID for broadcasting (you'd need to implement this)
-      // const projectId = await getProjectIdFromCard(id);
-
-      // broadcastToProject(projectId, {
-      //   type: "card_updated",
-      //   data: card,
-      // });
+      // Get the updated card with relations to get project ID
+      const updatedCard = await storage.getCard(id);
+      if (updatedCard) {
+        // Get project ID through column relationship
+        const columns = await storage.getColumns(updatedCard.columnId);
+        // Note: This is a simplified approach, you might need to adjust based on your schema
+      }
 
       res.json(card);
     } catch (error) {
