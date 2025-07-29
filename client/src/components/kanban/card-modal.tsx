@@ -23,6 +23,7 @@ import {
 import { formatDistanceToNow } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import type { CardWithRelations } from "@shared/schema";
+import CardTags from "./card-tags";
 
 interface CardModalProps {
   card: CardWithRelations | null;
@@ -188,7 +189,7 @@ export default function CardModal({ card, isOpen, onClose, projectId }: CardModa
                   </div>
                 ))}
               </div>
-              
+
               {/* Add Comment */}
               <div className="mt-4 flex space-x-3">
                 <Avatar className="h-8 w-8">
@@ -298,27 +299,7 @@ export default function CardModal({ card, isOpen, onClose, projectId }: CardModa
             </div>
 
             {/* Tags */}
-            <div>
-              <h3 className="text-sm font-semibold text-gray-900 mb-2">Tags</h3>
-              <div className="flex flex-wrap gap-2 mb-2">
-                {card.tags.map(({ tag }) => (
-                  <Badge
-                    key={tag.id}
-                    variant="secondary"
-                    className="text-xs px-2 py-1 flex items-center space-x-1"
-                    style={{ 
-                      backgroundColor: `${tag.color}20`, 
-                      color: tag.color,
-                      borderColor: `${tag.color}40`
-                    }}
-                  >
-                    <span>{tag.name}</span>
-                    <X className="h-3 w-3 cursor-pointer hover:text-red-600" />
-                  </Badge>
-                ))}
-              </div>
-              <Input placeholder="Adicionar tag..." className="text-sm" />
-            </div>
+            <CardTags card={card} projectId={projectId} />
 
             {/* Linked Entities */}
             <div>

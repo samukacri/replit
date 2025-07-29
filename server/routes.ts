@@ -450,6 +450,30 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Card tag routes
+  app.post("/api/cards/:cardId/tags", async (req, res) => {
+    try {
+      const { cardId } = req.params;
+      const { tagId } = z.object({ tagId: z.string() }).parse(req.body);
+      await storage.addTagToCard(cardId, tagId);
+      res.status(201).json({ success: true });
+    } catch (error) {
+      console.error("Error adding tag to card:", error);
+      res.status(400).json({ message: "Failed to add tag to card" });
+    }
+  });
+
+  app.delete("/api/cards/:cardId/tags/:tagId", async (req, res) => {
+    try {
+      const { cardId, tagId } = req.params;
+      await storage.removeTagFromCard(cardId, tagId);
+      res.status(200).json({ success: true });
+    } catch (error) {
+      console.error("Error removing tag from card:", error);
+      res.status(400).json({ message: "Failed to remove tag from card" });
+    }
+  });
+
   // Comment routes
   app.post("/api/cards/:cardId/comments", async (req, res) => {
     try {

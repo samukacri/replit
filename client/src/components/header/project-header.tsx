@@ -1,4 +1,4 @@
-import { Search, Bell, ChevronDown, Columns, List, Calendar, BarChart3, Plus, FolderPlus, LayoutGrid } from "lucide-react";
+import { Search, Bell, ChevronDown, Columns, List, Calendar, BarChart3, Plus, FolderPlus, LayoutGrid, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -20,6 +20,7 @@ interface ProjectHeaderProps {
   onCreateProject: () => void;
   onCreateColumn: () => void;
   onCreateCard: () => void;
+  onOpenAutomations?: () => void;
 }
 
 export default function ProjectHeader({
@@ -31,6 +32,7 @@ export default function ProjectHeader({
   onCreateProject,
   onCreateColumn,
   onCreateCard,
+  onOpenAutomations,
 }: ProjectHeaderProps) {
   const getViewIcon = (view: string) => {
     switch (view) {
@@ -131,6 +133,18 @@ export default function ProjectHeader({
 
         {/* Action Buttons */}
         <div className="flex items-center space-x-2">
+          {currentProject && onOpenAutomations && (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={onOpenAutomations}
+              className="flex items-center space-x-1"
+            >
+              <Zap className="h-4 w-4" />
+              <span>Automações</span>
+            </Button>
+          )}
+          
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button size="sm" className="bg-blue-600 text-white hover:bg-blue-700">

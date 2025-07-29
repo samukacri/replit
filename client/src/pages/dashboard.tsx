@@ -4,9 +4,13 @@ import { useParams } from "wouter";
 import ProjectHeader from "@/components/header/project-header";
 import ProjectSidebar from "@/components/sidebar/project-sidebar";
 import KanbanBoard from "@/components/kanban/kanban-board";
+import ListView from "@/components/views/list-view";
+import CalendarView from "@/components/views/calendar-view";
+import TimelineView from "@/components/views/timeline-view";
 import CreateProjectModal from "@/components/modals/create-project-modal";
 import CreateColumnModal from "@/components/modals/create-column-modal";
 import CreateCardModal from "@/components/modals/create-card-modal";
+import AutomationModal from "@/components/modals/automation-modal";
 import { DndProvider } from "@/components/ui/dnd-context";
 import type { ProjectWithRelations } from "@shared/schema";
 
@@ -20,6 +24,8 @@ export default function Dashboard() {
   const [showCreateColumn, setShowCreateColumn] = useState(false);
   const [showCreateCard, setShowCreateCard] = useState(false);
   const [selectedColumnId, setSelectedColumnId] = useState("");
+  const [selectedCard, setSelectedCard] = useState<any>(null);
+  const [showAutomations, setShowAutomations] = useState(false);
 
   // Fetch projects list
   const { data: projects, isLoading: projectsLoading } = useQuery({
@@ -82,6 +88,7 @@ export default function Dashboard() {
               setShowCreateCard(true);
             }
           }}
+          onOpenAutomations={() => setShowAutomations(true)}
         />
         
         <div className="flex h-screen pt-16">
@@ -98,22 +105,25 @@ export default function Dashboard() {
               />
             )}
             
-            {viewType === "list" && (
-              <div className="flex items-center justify-center h-full">
-                <p className="text-gray-500">Visualização em lista em desenvolvimento</p>
-              </div>
+            {viewType === "list" && currentProject && (
+              <ListView 
+                project={currentProject} 
+                onCardClick={setSelectedCard}
+              />
             )}
             
-            {viewType === "calendar" && (
-              <div className="flex items-center justify-center h-full">
-                <p className="text-gray-500">Visualização em calendário em desenvolvimento</p>
-              </div>
+            {viewType === "calendar" && currentProject && (
+              <CalendarView 
+                project={currentProject} 
+                onCardClick={setSelectedCard}
+              />
             )}
             
-            {viewType === "timeline" && (
-              <div className="flex items-center justify-center h-full">
-                <p className="text-gray-500">Visualização em timeline em desenvolvimento</p>
-              </div>
+            {viewType === "timeline" && currentProject && (
+              <TimelineView 
+                project={currentProject} 
+                onCardClick={setSelectedCard}
+              />
             )}
           </main>
         </div>
@@ -140,6 +150,14 @@ export default function Dashboard() {
               setSelectedColumnId("");
             }}
             columnId={selectedColumnId}
+            projectId={effectiveProjectId}
+          />
+        )}
+        
+        {effectiveProjectId && (
+          <AutomationModal
+            isOpen={showAutomations}
+            onClose={() => setShowAutomations(false)}
             projectId={effectiveProjectId}
           />
         )}
