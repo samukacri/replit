@@ -1,0 +1,483 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: hsl(0, 0%, 100%);
+  --foreground: hsl(20, 14.3%, 4.1%);
+  --muted: hsl(60, 4.8%, 95.9%);
+  --muted-foreground: hsl(25, 5.3%, 44.7%);
+  --popover: hsl(0, 0%, 100%);
+  --popover-foreground: hsl(20, 14.3%, 4.1%);
+  --card: hsl(0, 0%, 100%);
+  --card-foreground: hsl(20, 14.3%, 4.1%);
+  --border: hsl(20, 5.9%, 90%);
+  --input: hsl(20, 5.9%, 90%);
+  --primary: hsl(207, 90%, 54%);
+  --primary-foreground: hsl(211, 100%, 99%);
+  --secondary: hsl(60, 4.8%, 95.9%);
+  --secondary-foreground: hsl(24, 9.8%, 10%);
+  --accent: hsl(60, 4.8%, 95.9%);
+  --accent-foreground: hsl(24, 9.8%, 10%);
+  --destructive: hsl(0, 84.2%, 60.2%);
+  --destructive-foreground: hsl(60, 9.1%, 97.8%);
+  --ring: hsl(207, 90%, 54%);
+  --radius: 0.5rem;
+
+  /* Custom project management colors */
+  --priority-high: hsl(0, 84.2%, 60.2%);
+  --priority-medium: hsl(45, 93%, 47%);
+  --priority-low: hsl(142, 71%, 45%);
+  
+  --status-backlog: hsl(220, 13%, 69%);
+  --status-progress: hsl(217, 91%, 60%);
+  --status-review: hsl(45, 93%, 47%);
+  --status-done: hsl(142, 71%, 45%);
+  
+  --kanban-gray-bg: hsl(220, 14%, 96%);
+  --kanban-blue-bg: hsl(214, 100%, 97%);
+  --kanban-yellow-bg: hsl(48, 100%, 96%);
+  --kanban-green-bg: hsl(138, 76%, 97%);
+  
+  --kanban-gray-border: hsl(220, 13%, 91%);
+  --kanban-blue-border: hsl(214, 84%, 85%);
+  --kanban-yellow-border: hsl(48, 84%, 85%);
+  --kanban-green-border: hsl(138, 50%, 85%);
+
+  /* Entity type colors */
+  --entity-property: hsl(217, 91%, 60%);
+  --entity-person: hsl(142, 71%, 45%);
+  --entity-contract: hsl(271, 81%, 56%);
+}
+
+.dark {
+  --background: hsl(240, 10%, 3.9%);
+  --foreground: hsl(0, 0%, 98%);
+  --muted: hsl(240, 3.7%, 15.9%);
+  --muted-foreground: hsl(240, 5%, 64.9%);
+  --popover: hsl(240, 10%, 3.9%);
+  --popover-foreground: hsl(0, 0%, 98%);
+  --card: hsl(240, 10%, 3.9%);
+  --card-foreground: hsl(0, 0%, 98%);
+  --border: hsl(240, 3.7%, 15.9%);
+  --input: hsl(240, 3.7%, 15.9%);
+  --primary: hsl(207, 90%, 54%);
+  --primary-foreground: hsl(211, 100%, 99%);
+  --secondary: hsl(240, 3.7%, 15.9%);
+  --secondary-foreground: hsl(0, 0%, 98%);
+  --accent: hsl(240, 3.7%, 15.9%);
+  --accent-foreground: hsl(0, 0%, 98%);
+  --destructive: hsl(0, 62.8%, 30.6%);
+  --destructive-foreground: hsl(0, 0%, 98%);
+  --ring: hsl(240, 4.9%, 83.9%);
+  --radius: 0.5rem;
+
+  /* Dark mode custom colors */
+  --priority-high: hsl(0, 62.8%, 30.6%);
+  --priority-medium: hsl(32, 95%, 44%);
+  --priority-low: hsl(142, 71%, 45%);
+  
+  --status-backlog: hsl(220, 13%, 69%);
+  --status-progress: hsl(217, 91%, 60%);
+  --status-review: hsl(45, 93%, 47%);
+  --status-done: hsl(142, 71%, 45%);
+  
+  --kanban-gray-bg: hsl(240, 3.7%, 15.9%);
+  --kanban-blue-bg: hsl(217, 32%, 17%);
+  --kanban-yellow-bg: hsl(48, 96%, 8%);
+  --kanban-green-bg: hsl(138, 76%, 8%);
+  
+  --kanban-gray-border: hsl(240, 3.7%, 25%);
+  --kanban-blue-border: hsl(217, 32%, 25%);
+  --kanban-yellow-border: hsl(48, 96%, 15%);
+  --kanban-green-border: hsl(138, 76%, 15%);
+
+  --entity-property: hsl(217, 91%, 60%);
+  --entity-person: hsl(142, 71%, 45%);
+  --entity-contract: hsl(271, 81%, 56%);
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply font-sans antialiased bg-background text-foreground;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  }
+
+  /* Smooth scrolling for better UX */
+  html {
+    scroll-behavior: smooth;
+  }
+
+  /* Custom scrollbar styling */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-gray-100 dark:bg-gray-800;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-gray-300 dark:bg-gray-600 rounded-full;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-gray-400 dark:bg-gray-500;
+  }
+}
+
+@layer components {
+  /* Priority indicators */
+  .priority-high {
+    @apply border-l-red-500 bg-red-50 dark:bg-red-950/20;
+  }
+  
+  .priority-medium {
+    @apply border-l-yellow-500 bg-yellow-50 dark:bg-yellow-950/20;
+  }
+  
+  .priority-low {
+    @apply border-l-green-500 bg-green-50 dark:bg-green-950/20;
+  }
+
+  /* Kanban column backgrounds */
+  .kanban-column-gray {
+    background-color: var(--kanban-gray-bg);
+    border-color: var(--kanban-gray-border);
+  }
+  
+  .kanban-column-blue {
+    background-color: var(--kanban-blue-bg);
+    border-color: var(--kanban-blue-border);
+  }
+  
+  .kanban-column-yellow {
+    background-color: var(--kanban-yellow-bg);
+    border-color: var(--kanban-yellow-border);
+  }
+  
+  .kanban-column-green {
+    background-color: var(--kanban-green-bg);
+    border-color: var(--kanban-green-border);
+  }
+
+  /* Card hover effects */
+  .kanban-card {
+    @apply transition-all duration-200 hover:shadow-md hover:-translate-y-0.5;
+  }
+
+  .kanban-card:hover {
+    @apply shadow-lg;
+  }
+
+  /* Drag and drop states */
+  .drag-preview {
+    @apply opacity-50 rotate-2 scale-105 transition-transform;
+  }
+
+  .drop-zone-active {
+    @apply ring-2 ring-primary ring-opacity-50 bg-primary/5;
+  }
+
+  /* Entity type indicators */
+  .entity-property {
+    @apply text-blue-600 bg-blue-100 dark:text-blue-400 dark:bg-blue-950/30;
+  }
+  
+  .entity-person {
+    @apply text-green-600 bg-green-100 dark:text-green-400 dark:bg-green-950/30;
+  }
+  
+  .entity-contract {
+    @apply text-purple-600 bg-purple-100 dark:text-purple-400 dark:bg-purple-950/30;
+  }
+
+  /* Status badges */
+  .status-backlog {
+    @apply bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-200;
+  }
+  
+  .status-progress {
+    @apply bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300;
+  }
+  
+  .status-review {
+    @apply bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300;
+  }
+  
+  .status-done {
+    @apply bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300;
+  }
+
+  /* Loading states */
+  .loading-shimmer {
+    @apply animate-pulse bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 dark:from-gray-700 dark:via-gray-600 dark:to-gray-700;
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+  }
+
+  @keyframes shimmer {
+    0% {
+      background-position: -200% 0;
+    }
+    100% {
+      background-position: 200% 0;
+    }
+  }
+
+  /* Modal backdrop */
+  .modal-backdrop {
+    @apply fixed inset-0 bg-black/50 backdrop-blur-sm;
+  }
+
+  /* Form focus states */
+  .form-input:focus {
+    @apply ring-2 ring-primary ring-offset-2 border-primary;
+  }
+
+  /* Progress bars */
+  .progress-bar {
+    @apply bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden;
+  }
+
+  .progress-fill {
+    @apply bg-primary transition-all duration-300 ease-out h-full rounded-full;
+  }
+
+  /* Toast notifications positioning */
+  .toast-container {
+    @apply fixed top-4 right-4 z-50;
+  }
+
+  /* Sidebar styling */
+  .sidebar-section {
+    @apply p-6 border-b border-gray-200 dark:border-gray-700;
+  }
+
+  .sidebar-section:last-child {
+    @apply border-b-0;
+  }
+
+  /* Quick action buttons */
+  .quick-action-btn {
+    @apply w-full justify-start p-2 h-auto text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg transition-colors;
+  }
+
+  /* Filter buttons */
+  .filter-btn {
+    @apply w-full justify-between p-2 h-auto text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg transition-colors;
+  }
+
+  /* Entity link styling */
+  .entity-link {
+    @apply flex items-center space-x-3 p-2 bg-gray-50 dark:bg-gray-800 rounded-lg transition-colors hover:bg-gray-100 dark:hover:bg-gray-700;
+  }
+
+  /* View toggle buttons */
+  .view-toggle {
+    @apply flex bg-gray-100 dark:bg-gray-800 rounded-lg p-1;
+  }
+
+  .view-toggle-btn {
+    @apply px-3 py-1 text-sm font-medium rounded transition-colors;
+  }
+
+  .view-toggle-btn.active {
+    @apply bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-200 shadow-sm;
+  }
+
+  .view-toggle-btn:not(.active) {
+    @apply text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200;
+  }
+
+  /* Comment styling */
+  .comment-bubble {
+    @apply bg-gray-50 dark:bg-gray-800 rounded-lg p-3 relative;
+  }
+
+  .comment-bubble::before {
+    content: '';
+    @apply absolute left-0 top-4 w-0 h-0 border-t-8 border-t-transparent border-b-8 border-b-transparent border-r-8 border-r-gray-50 dark:border-r-gray-800;
+    left: -8px;
+  }
+
+  /* Attachment styling */
+  .attachment-item {
+    @apply flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors;
+  }
+
+  /* Card checklist styling */
+  .checklist-item {
+    @apply flex items-center space-x-3 p-2 rounded hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors;
+  }
+
+  .checklist-item.completed {
+    @apply opacity-60;
+  }
+
+  /* Tag cloud styling */
+  .tag-cloud {
+    @apply flex flex-wrap gap-1;
+  }
+
+  .tag {
+    @apply inline-flex items-center px-2 py-1 rounded-full text-xs font-medium transition-all hover:scale-105;
+  }
+
+  /* Activity timeline */
+  .activity-timeline {
+    @apply relative;
+  }
+
+  .activity-timeline::before {
+    content: '';
+    @apply absolute left-1 top-0 bottom-0 w-px bg-gray-200 dark:bg-gray-700;
+  }
+
+  .activity-item {
+    @apply relative flex items-start space-x-3 pb-4;
+  }
+
+  .activity-item::before {
+    content: '';
+    @apply absolute left-0 top-2 w-2 h-2 rounded-full bg-gray-400 dark:bg-gray-600 z-10;
+  }
+
+  /* Responsive utilities */
+  @media (max-width: 768px) {
+    .sidebar-collapse {
+      @apply hidden;
+    }
+    
+    .kanban-board {
+      @apply px-4;
+    }
+    
+    .kanban-column {
+      @apply w-72;
+    }
+  }
+
+  /* Print styles */
+  @media print {
+    .no-print {
+      @apply hidden;
+    }
+    
+    .kanban-board {
+      @apply flex-col space-y-4;
+    }
+    
+    .kanban-column {
+      @apply w-full break-inside-avoid;
+    }
+  }
+}
+
+@layer utilities {
+  /* Text truncation utilities */
+  .line-clamp-1 {
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  /* Animation utilities */
+  .animate-fade-in {
+    animation: fadeIn 0.3s ease-out;
+  }
+
+  .animate-slide-up {
+    animation: slideUp 0.3s ease-out;
+  }
+
+  .animate-bounce-in {
+    animation: bounceIn 0.4s ease-out;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes slideUp {
+    from {
+      transform: translateY(20px);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+
+  @keyframes bounceIn {
+    0% {
+      transform: scale(0.3);
+      opacity: 0;
+    }
+    50% {
+      transform: scale(1.05);
+    }
+    70% {
+      transform: scale(0.9);
+    }
+    100% {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
+
+  /* Focus utilities */
+  .focus-ring {
+    @apply focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 dark:focus:ring-offset-gray-800;
+  }
+
+  /* Glass morphism effect */
+  .glass {
+    @apply bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm border border-white/20 dark:border-gray-700/20;
+  }
+
+  /* Gradient text */
+  .gradient-text {
+    @apply bg-gradient-to-r from-primary to-blue-600 bg-clip-text text-transparent;
+  }
+
+  /* Shadow utilities */
+  .shadow-soft {
+    box-shadow: 0 2px 15px -3px rgba(0, 0, 0, 0.07), 0 10px 20px -2px rgba(0, 0, 0, 0.04);
+  }
+
+  .shadow-glow {
+    box-shadow: 0 0 20px -5px var(--primary);
+  }
+
+  /* Border utilities */
+  .border-gradient {
+    @apply border border-transparent bg-gradient-to-r from-primary to-blue-600 bg-clip-border;
+  }
+}
