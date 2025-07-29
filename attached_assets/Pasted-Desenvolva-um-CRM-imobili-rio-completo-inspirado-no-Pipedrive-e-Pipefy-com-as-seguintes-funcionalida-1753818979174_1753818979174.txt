@@ -1,0 +1,59 @@
+Desenvolva um CRM imobiliário completo inspirado no Pipedrive e Pipefy com as seguintes funcionalidades:
+
+1. **Controle por Equipes Hierárquicas:**
+   - Perfis: Administrador, Gestor, Corretor (Vendas/Locação)
+   - Visões segmentadas por equipe
+   - Permissões granulares (ex: corretores só veem seus leads)
+   - Dashboard de performance por equipe/corretor
+
+2. **Sistema de Funis Customizáveis:**
+   - Configuração de estágios do funil (ex: Lead → Visita → Proposta → Fechamento)
+   - Métricas de conversão entre estágios
+   - Previsão de vendas baseada no funil
+   - Funis diferentes para vendas e locação
+
+3. **Customização Flexível:**
+   - Adição de campos personalizados (texto, número, data, seleção, arquivo)
+   - Layouts customizáveis por tipo de imóvel (residencial/comercial)
+   - Templates de pipelines reutilizáveis
+
+4. **Automações Avançadas:**
+   - Gatilhos baseados em: mudança de estágio, data, inatividade
+   - Ações automáticas:
+        * Notificações (email/SMS)
+        * Criar tarefas de follow-up
+        * Atualizar campos
+        * Mover entre estágios
+   - Editor visual de automações (if-this-then-that)
+
+5. **Integração com Módulo de Imóveis:**
+   - Vinculação de leads a imóveis específicos
+   - Cards com preview de imóvel (fotos, características)
+   - Histórico completo de interações
+   - Sistema de tags para classificação
+
+6. **Recursos Específicos para Imobiliárias:**
+   - Controle de comissões (cálculo automático)
+   - Agenda de visitas com conflito de horários
+   - Geração de propostas (PDF personalizável)
+   - Controle de documentação (contratos, checklists)
+   - Relatórios de performance por imóvel/zona
+
+7. **UI/UX Moderna:**
+   - Interface tipo Pipedrive com arrastar/soltar
+   - Visualização de pipeline e calendário
+   - Cards ricos em informações (como no exemplo)
+   - Mobile responsive
+
+8. **Requisitos Técnicos:**
+   - Arquitetura modular
+   - API REST para integração com outros sistemas
+   - Log de auditoria completo
+   - Notificações em tempo real
+
+Entregáveis esperados:
+a) Modelo de dados com relacionamentos (leads, imóveis, corretores, equipes)
+b) Fluxo de automação completo (ex: lead sem contato em 3 dias → notificação)
+c) Componentes de UI: funil customizável, card de lead, formulário de campos
+d) Sistema de permissões hierárquico
+e) Módulo de comissões calculadas
