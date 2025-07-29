@@ -120,6 +120,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  app.post("/api/projects", async (req, res) => {
+    try {
+      // TODO: Get userId from session/auth
+      const userId = "550e8400-e29b-41d4-a716-446655440000";
+      const projectData = insertProjectSchema.parse({
+        ...req.body,
+        ownerId: userId,
+      });
+      const project = await storage.createProject(projectData);
+      res.status(201).json(project);
+    } catch (error) {
+      console.error("Error creating project:", error);
+      res.status(500).json({ message: "Failed to create project" });
+    }
+  });
+
   app.get("/api/projects/:id", async (req, res) => {
     try {
       const { id } = req.params;
@@ -192,6 +208,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error fetching columns:", error);
       res.status(500).json({ message: "Failed to fetch columns" });
+    }
+  });
+
+  app.post("/api/projects/:projectId/columns", async (req, res) => {
+    try {
+      const { projectId } = req.params;
+      const columnData = insertColumnSchema.parse({
+        ...req.body,
+        projectId,
+      });
+      const column = await storage.createColumn(columnData);
+      res.status(201).json(column);
+    } catch (error) {
+      console.error("Error creating column:", error);
+      res.status(500).json({ message: "Failed to create column" });
     }
   });
 
@@ -277,25 +308,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/columns/:columnId/cards", async (req, res) => {
     try {
       const { columnId } = req.params;
-      const cardData = insertCardSchema.parse({ ...req.body, columnId });
+      // TODO: Get userId from session/auth
+      const userId = "550e8400-e29b-41d4-a716-446655440000";
+      const cardData = insertCardSchema.parse({ 
+        ...req.body, 
+        columnId,
+        assigneeId: userId,
+        createdById: userId,
+      });
       const card = await storage.createCard(cardData);
-      
-      // Get project ID for broadcasting
-      const column = await storage.getColumns(card.columnId);
-      const projectId = column[0]?.projectId; // Assuming we can get project ID this way
-
-      broadcastToProject(projectId, {
-        type: "card_created",
-        data: card,
-      });
-
-      await storage.logActivity({
-        action: "card_created",
-        description: `Card "${card.title}" was created`,
-        cardId: card.id,
-        userId: card.createdById,
-        metadata: { cardTitle: card.title },
-      });
 
       res.status(201).json(card);
     } catch (error) {

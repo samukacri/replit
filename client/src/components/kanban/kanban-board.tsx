@@ -10,9 +10,10 @@ import type { ProjectWithRelations, CardWithRelations } from "@shared/schema";
 
 interface KanbanBoardProps {
   project: ProjectWithRelations;
+  onCreateCard: (columnId: string) => void;
 }
 
-export default function KanbanBoard({ project }: KanbanBoardProps) {
+export default function KanbanBoard({ project, onCreateCard }: KanbanBoardProps) {
   const [selectedCard, setSelectedCard] = useState<CardWithRelations | null>(null);
   const { handleCardDrop, handleColumnDrop } = useDragDrop(project.id);
   const { isConnected } = useWebSocket(project.id);
@@ -63,6 +64,7 @@ export default function KanbanBoard({ project }: KanbanBoardProps) {
               onCardClick={setSelectedCard}
               onCardDrop={handleCardDrop}
               onColumnDrop={handleColumnDrop}
+              onCreateCard={onCreateCard}
             />
           ))}
         </div>

@@ -1,4 +1,4 @@
-import { Search, Bell, ChevronDown, Columns, List, Calendar, BarChart3 } from "lucide-react";
+import { Search, Bell, ChevronDown, Columns, List, Calendar, BarChart3, Plus, FolderPlus, LayoutGrid } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -17,6 +17,9 @@ interface ProjectHeaderProps {
   onProjectSelect: (projectId: string) => void;
   viewType: "kanban" | "list" | "calendar" | "timeline";
   onViewTypeChange: (view: "kanban" | "list" | "calendar" | "timeline") => void;
+  onCreateProject: () => void;
+  onCreateColumn: () => void;
+  onCreateCard: () => void;
 }
 
 export default function ProjectHeader({
@@ -25,6 +28,9 @@ export default function ProjectHeader({
   onProjectSelect,
   viewType,
   onViewTypeChange,
+  onCreateProject,
+  onCreateColumn,
+  onCreateCard,
 }: ProjectHeaderProps) {
   const getViewIcon = (view: string) => {
     switch (view) {
@@ -86,11 +92,18 @@ export default function ProjectHeader({
               >
                 <div 
                   className="w-3 h-3 rounded-full"
-                  style={{ backgroundColor: project.color }}
+                  style={{ backgroundColor: project.color || "#6b7280" }}
                 />
                 <span>{project.name}</span>
               </DropdownMenuItem>
             ))}
+            <DropdownMenuItem 
+              onClick={onCreateProject}
+              className="flex items-center space-x-2 border-t pt-2 mt-2"
+            >
+              <FolderPlus className="h-4 w-4 text-blue-600" />
+              <span className="text-blue-600 font-medium">Novo Projeto</span>
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
@@ -114,6 +127,32 @@ export default function ProjectHeader({
               <span className="ml-1">{getViewLabel(view)}</span>
             </Button>
           ))}
+        </div>
+
+        {/* Action Buttons */}
+        <div className="flex items-center space-x-2">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button size="sm" className="bg-blue-600 text-white hover:bg-blue-700">
+                <Plus className="h-4 w-4 mr-1" />
+                Criar
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-48">
+              <DropdownMenuItem onClick={onCreateCard} className="flex items-center space-x-2">
+                <LayoutGrid className="h-4 w-4" />
+                <span>Novo Cartão</span>
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={onCreateColumn} className="flex items-center space-x-2">
+                <Columns className="h-4 w-4" />
+                <span>Nova Coluna</span>
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={onCreateProject} className="flex items-center space-x-2">
+                <FolderPlus className="h-4 w-4" />
+                <span>Novo Projeto</span>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
 
         {/* Search */}

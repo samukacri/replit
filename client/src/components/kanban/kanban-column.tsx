@@ -17,6 +17,7 @@ interface KanbanColumnProps {
   onCardClick: (card: CardWithRelations) => void;
   onCardDrop: (cardId: string, columnId: string, position: number) => void;
   onColumnDrop: (columnId: string, position: number) => void;
+  onCreateCard: (columnId: string) => void;
 }
 
 export default function KanbanColumn({
@@ -24,6 +25,7 @@ export default function KanbanColumn({
   onCardClick,
   onCardDrop,
   onColumnDrop,
+  onCreateCard,
 }: KanbanColumnProps) {
   const [isAddingCard, setIsAddingCard] = useState(false);
   
@@ -43,7 +45,7 @@ export default function KanbanColumn({
       "#F59E0B": "bg-yellow-50",
       "#10B981": "bg-green-50",
     };
-    return colorMap[column.color] || "bg-gray-100";
+    return colorMap[column.color || "#6B7280"] || "bg-gray-100";
   };
 
   const getColumnBorderClass = () => {
@@ -53,7 +55,7 @@ export default function KanbanColumn({
       "#F59E0B": "border-yellow-200",
       "#10B981": "border-green-200",
     };
-    return colorMap[column.color] || "border-gray-200";
+    return colorMap[column.color || "#6B7280"] || "border-gray-200";
   };
 
   const getAddButtonClass = () => {
@@ -63,7 +65,7 @@ export default function KanbanColumn({
       "#F59E0B": "border-yellow-300 text-yellow-700 hover:border-yellow-400",
       "#10B981": "border-green-300 text-green-700 hover:border-green-400",
     };
-    return colorMap[column.color] || "border-gray-300 text-gray-500 hover:border-gray-400";
+    return colorMap[column.color || "#6B7280"] || "border-gray-300 text-gray-500 hover:border-gray-400";
   };
 
   return (
@@ -79,7 +81,7 @@ export default function KanbanColumn({
           <div className="flex items-center space-x-2">
             <div 
               className="w-3 h-3 rounded-full" 
-              style={{ backgroundColor: column.color }}
+              style={{ backgroundColor: column.color || "#6b7280" }}
             />
             <h3 className="font-semibold text-gray-900">{column.name}</h3>
             <Badge variant="secondary" className="text-xs">
@@ -116,7 +118,7 @@ export default function KanbanColumn({
         <Button
           variant="outline"
           className={`w-full p-3 border-2 border-dashed ${getAddButtonClass()} text-sm font-medium h-auto`}
-          onClick={() => setIsAddingCard(true)}
+          onClick={() => onCreateCard(column.id)}
         >
           <Plus className="h-4 w-4 mr-2" />
           Adicionar card

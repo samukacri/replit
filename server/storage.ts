@@ -270,7 +270,20 @@ export class DatabaseStorage implements IStorage {
   }
 
   async createColumn(columnData: InsertColumn): Promise<Column> {
-    const [column] = await db.insert(columns).values(columnData).returning();
+    // Get the next position for this project
+    const [lastColumn] = await db
+      .select({ position: columns.position })
+      .from(columns)
+      .where(eq(columns.projectId, columnData.projectId))
+      .orderBy(desc(columns.position))
+      .limit(1);
+
+    const position = lastColumn ? lastColumn.position + 1 : 0;
+
+    const [column] = await db.insert(columns).values({
+      ...columnData,
+      position,
+    }).returning();
     return column;
   }
 
@@ -371,7 +384,20 @@ export class DatabaseStorage implements IStorage {
   }
 
   async createCard(cardData: InsertCard): Promise<Card> {
-    const [card] = await db.insert(cards).values(cardData).returning();
+    // Get the next position for this column
+    const [lastCard] = await db
+      .select({ position: cards.position })
+      .from(cards)
+      .where(eq(cards.columnId, cardData.columnId))
+      .orderBy(desc(cards.position))
+      .limit(1);
+
+    const position = lastCard ? lastCard.position + 1 : 0;
+
+    const [card] = await db.insert(cards).values({
+      ...cardData,
+      position,
+    }).returning();
     return card;
   }
 

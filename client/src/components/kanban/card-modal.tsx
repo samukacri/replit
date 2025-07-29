@@ -10,6 +10,8 @@ import {
   Dialog,
   DialogContent,
   DialogHeader,
+  DialogTitle,
+  DialogDescription,
 } from "@/components/ui/dialog";
 import {
   Select,
@@ -57,13 +59,17 @@ export default function CardModal({ card, isOpen, onClose, projectId }: CardModa
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-4xl max-h-[90vh] overflow-hidden p-0">
+      <DialogContent className="max-w-4xl max-h-[90vh] overflow-hidden p-0" aria-describedby="card-description">
+        <DialogTitle className="sr-only">Detalhes do Cartão</DialogTitle>
+        <DialogDescription id="card-description" className="sr-only">
+          Visualizar e editar detalhes do cartão {card.title}
+        </DialogDescription>
         {/* Modal Header */}
         <DialogHeader className="flex flex-row items-center justify-between p-6 border-b border-gray-200">
           <div className="flex items-center space-x-3 flex-1">
-            <div className={`w-4 h-4 ${getPriorityColor(card.priority)} rounded-full`} />
+            <div className={`w-4 h-4 ${getPriorityColor(card.priority || "medium")} rounded-full`} />
             <Input
-              defaultValue={card.title}
+              defaultValue={card.title || ""}
               className="text-xl font-semibold text-gray-900 border-none bg-transparent focus:ring-0 p-0 h-auto"
             />
           </div>
@@ -137,7 +143,7 @@ export default function CardModal({ card, isOpen, onClose, projectId }: CardModa
                           <div className="text-sm font-medium text-gray-900">{attachment.originalName}</div>
                           <div className="text-xs text-gray-500">
                             {Math.round(attachment.size / 1024)} KB • 
-                            Adicionado {formatDistanceToNow(new Date(attachment.createdAt), { addSuffix: true, locale: ptBR })}
+                            Adicionado {attachment.createdAt ? formatDistanceToNow(new Date(attachment.createdAt), { addSuffix: true, locale: ptBR }) : ""}
                           </div>
                         </div>
                       </div>
@@ -174,7 +180,7 @@ export default function CardModal({ card, isOpen, onClose, projectId }: CardModa
                           {comment.author.firstName} {comment.author.lastName}
                         </span>
                         <span className="text-xs text-gray-500">
-                          {formatDistanceToNow(new Date(comment.createdAt), { addSuffix: true, locale: ptBR })}
+                          {comment.createdAt ? formatDistanceToNow(new Date(comment.createdAt), { addSuffix: true, locale: ptBR }) : ""}
                         </span>
                       </div>
                       <p className="text-sm text-gray-700">{comment.content}</p>
@@ -240,7 +246,7 @@ export default function CardModal({ card, isOpen, onClose, projectId }: CardModa
             {/* Priority */}
             <div>
               <h3 className="text-sm font-semibold text-gray-900 mb-2">Prioridade</h3>
-              <Select defaultValue={card.priority}>
+              <Select defaultValue={card.priority || "medium"}>
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
@@ -285,7 +291,7 @@ export default function CardModal({ card, isOpen, onClose, projectId }: CardModa
                 <div className="mt-2 flex items-center space-x-2 text-xs text-red-600">
                   <span>⚠️</span>
                   <span>
-                    {formatDistanceToNow(new Date(card.deadline), { addSuffix: true, locale: ptBR })}
+                    {card.deadline ? formatDistanceToNow(new Date(card.deadline), { addSuffix: true, locale: ptBR }) : ""}
                   </span>
                 </div>
               )}
