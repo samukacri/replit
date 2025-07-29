@@ -64,6 +64,7 @@ export interface IStorage {
   deleteCard(id: string): Promise<void>;
   moveCard(cardId: string, columnId: string, position: number): Promise<void>;
   reorderCards(columnId: string, cardOrders: { id: string; position: number }[]): Promise<void>;
+  getCardsByColumn(columnId: string): Promise<Card[]>;
 
   // Tag operations
   getTags(projectId: string): Promise<Tag[]>;
@@ -311,6 +312,10 @@ export class DatabaseStorage implements IStorage {
     });
   }
 
+  async getCardsByColumn(columnId: string): Promise<Card[]> {
+    return await db.select().from(cards).where(eq(cards.columnId, columnId)).orderBy(asc(cards.position));
+  }
+
   // Card operations
   async getCard(id: string): Promise<CardWithRelations | undefined> {
     const [cardData] = await db
@@ -554,7 +559,7 @@ export class DatabaseStorage implements IStorage {
     const activities = await query
       .orderBy(desc(activityLog.createdAt))
       .limit(limit);
-      
+
     return activities.map(a => ({ ...a.activity_log, user: a.users! }));
   }
 }

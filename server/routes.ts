@@ -310,9 +310,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const { columnId } = req.params;
       // TODO: Get userId from session/auth
       const userId = "550e8400-e29b-41d4-a716-446655440000";
+      
+      // Get the next position for this column
+      const cards = await storage.getCardsByColumn(columnId);
+      const position = cards.length;
+      
       const cardData = insertCardSchema.parse({ 
         ...req.body, 
         columnId,
+        position,
         assigneeId: userId,
         createdById: userId,
       });
